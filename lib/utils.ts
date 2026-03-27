@@ -2,7 +2,6 @@ import { type ChartConfiguration, type ChartDataset, type Point as ChartPoint } 
 import dminkowski from "@stdlib/stats-strided-distances-dminkowski";
 import dcityblock from "@stdlib/stats-strided-distances-dcityblock";
 import dsquaredEuclidean from "@stdlib/stats-strided-distances-dsquared-euclidean";
-import dcosineDistance from "@stdlib/stats-strided-distances-dcosine-distance";
 import dchebychev from "@stdlib/stats-strided-distances-dchebychev";
 import deuclidean from "@stdlib/stats-strided-distances-deuclidean";
 import { cos, sin, abs, clamp } from "@stdlib/math/base/special";
@@ -243,8 +242,6 @@ export function evaluateDistance( config: MetricConfig, dirX: number, dirY: numb
 		return dcityblock.ndarray( 2, SCRATCH_A, 1, 0, SCRATCH_B, 1, 0 );
 		case "squaredEuclidean":
 		return dsquaredEuclidean.ndarray( 2, SCRATCH_A, 1, 0, SCRATCH_B, 1, 0 );
-		case "cosine":
-		return dcosineDistance.ndarray( 2, SCRATCH_A, 1, 0, SCRATCH_B, 1, 0 );
 		case "euclidean":
 		return deuclidean.ndarray( 2, SCRATCH_A, 1, 0, SCRATCH_B, 1, 0 );
 		case "chebyshev":

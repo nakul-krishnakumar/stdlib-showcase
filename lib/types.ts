@@ -2,7 +2,6 @@ export type MetricType =
 | "minkowski"
 | "cityblock"
 | "squaredEuclidean"
-| "cosine"
 | "euclidean"
 | "chebyshev";
 

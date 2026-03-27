@@ -31,10 +31,6 @@ const OPTIONS: Array<Omit<MetricConfig, "id">> = [
 		type: "chebyshev",
 		label: "Chebyshev (L-infinity)",
 	},
-	{
-		type: "cosine",
-		label: "Cosine Distance",
-	},
 ];
 
 export default function Home() {
