@@ -348,13 +348,13 @@ References:
  
 ---
 
-## SGD Classifier
+## SGD Classification
 
-- `ml/sgd-classifier/ctor`
+- `ml/sgd-classification/ctor`
 - `ml/strided/sgd-trainer`
 - `ml/strided/sgd-classification-binary`
 - `ml/strided/sgd-classification-multiclass`
-- `ml/base/sgd-classifier/results`
+- `ml/base/sgd-classification/results`
 	```typescript
 	interface Results {
 		/*
@@ -408,7 +408,52 @@ References:
 	}
    ```
 
-- `ml/base/sgd-classifier/losses`
-- `ml/base/sgd-classifier/learningRates`
+- `ml/base/sgd-classification/losses`
+- `ml/base/sgd-classification/learningRates`
 
 ![sgd-classification-dependency-graph](sgd_clf_dep_graph.png)
+
+## Perceptron
+
+- `ml/perceptron/ctor`
+
+```javascript
+// N is the number of features
+function perceptron( N, options ) {
+    var model;
+    var obj;
+
+    options.loss = "perceptron";
+    options.learningRate = "constant";
+    model = new SGDClassifier( N, options );
+    
+    obj = {};
+    
+    setReadOnly( obj, 'fit', fit );
+    setReadOnly( obj, 'predict', predict );
+    
+    return obj;
+    
+    function fit( X, y ) {
+        return model.fit( X, y );
+    }
+    
+    function predict( X ) {
+        return model.predict( X );
+    }
+}
+```
+
+![perceptron-dependency-graph](perceptron_dep_graph.png)
+
+---
+
+## SGD Regression
+
+- `ml/sgd-regression/ctor`
+- `ml/strided/dsgd-regression`
+- `ml/base/sgd-regression/results`
+- `ml/base/sgd-classification/losses`
+- `ml/base/sgd-classification/learningRates`
+
+![sgd-regression-dependency-graph](sgd_reg_dep_graph.png)
