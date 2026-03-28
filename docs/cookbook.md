@@ -1,0 +1,336 @@
+
+## Distance Metrics
+
+- `stats/strided/dpcorr`
+- `stats/strided/distances/dcorrelation`
+- `stats/strided/distances/dsquared-cosine`
+- `stats/strided/distances/dsquared-correlation`
+
+---
+
+## Loss Functions
+
+- `ml/loss/hinge`
+
+	```javascript
+	// ml/loss/dhinge/lib/dhinge.js
+	var max = require( '@stdlib/math/base/special/max' );
+
+	function dhinge( y, p ) {
+		return max( 0, 1 - ( y*p ) );
+	}
+	```
+
+	```javascript
+	// ml/loss/dhinge/lib/dhinge.native.js
+	var addon = require( './../src/addon.node' );
+
+	function dhinge( y, p ) {
+		return addon( y, p );
+	}
+	```
+
+	```javascript
+	// ml/loss/dhinge/lib/main.js
+	var setReadOnly = require( '@stdlib/utils/define-nonenumerable-read-only-property' );
+	var dhinge = require( './dhinge.js' );
+	var ndarray = require( './ndarray.js' );
+
+	setReadOnly( dhinge, 'gradient', gradient );
+	```
+
+	```javascript
+	// ml/loss/dhinge/lib/gradient.js
+	function gradient( y, p ) {
+		if ( y*p < 1 ) {
+			return -y;
+		}
+		return 0;
+	}
+	```
+
+	```javascript
+	// ml/loss/dhinge/lib/gradient.native.js
+	var addon = require( './../src/addon.node' );
+
+	function gradient( y, p ) {
+		return addon.gradient( y, p );
+	}
+	```
+
+- `ml/loss/log`
+- `ml/loss/modified-huber`
+- `ml/loss/squared-hinge` 
+- `ml/loss/perceptron`
+- `ml/loss/squared-error`
+- `ml/loss/huber`
+- `ml/loss/epsilon-insensitive`
+- `ml/loss/squared-epsilon-insensitive`
+
+---
+
+## KMeans Clustering
+
+<details>
+<summary>
+  <code>ml/strided/dkmeansld</code> <b>[ Difficulty : 4/5 ]</b> (6-7 days)
+</summary>
+  <br>
+
+  - Add javascript implementation for `ml/strided/dkmeansld` [PR](https://github.com/stdlib-js/stdlib/pull/9703)
+  - Add C implementation for `ml/strided/dkmeansld`
+  - Add tests for `ml/strided/dkmeansld`
+  - Add benchmarks for `ml/strided/dkmeansld`
+  - Add examples for `ml/strided/dkmeansld`
+  
+  References:
+  - [dlib](https://github.com/davisking/dlib/blob/master/dlib/test/kmeans.cpp#L51)
+
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/base/kmeans/results</code> <b>[ Difficulty : 2/5 ]</b> (2-3 days)
+</summary>
+<br>
+
+  **Metrics enum**
+   - Add `ml/base/kmeans/metrics` [PR](https://github.com/stdlib-js/stdlib/pull/10714)
+   - Add `ml/base/kmeans/metric-str2enum` [PR](https://github.com/stdlib-js/stdlib/pull/10842)
+   - Add `ml/base/kmeans/metric-enum2str` [PR](https://github.com/stdlib-js/stdlib/pull/10841)
+   - Add `ml/base/kmeans/metric-resolve-enum`
+   - Add `ml/base/kmeans/metric-resolve-str`
+   <br>
+
+  **Algorithms enum**
+   - Add `ml/base/kmeans/algorithms` [PR](https://github.com/stdlib-js/stdlib/pull/10796)
+   - Add `ml/base/kmeans/algorithm-str2enum`
+   - Add `ml/base/kmeans/algorithm-enum2str`
+   - Add `ml/base/kmeans/algorithm-resolve-enum`
+   - Add `ml/base/kmeans/algorithm-resolve-str`
+  
+  **Results object**
+   - Add `ml/base/kmeans/results/factory`
+   - Add `ml/base/kmeans/results/float32`
+   - Add `ml/base/kmeans/results/float64`
+   - Add `ml/base/kmeans/results/struct-factory`
+   - Add `ml/base/kmeans/results/to-json`
+   - Add `ml/base/kmeans/results/to-string`
+   
+   ```typescript
+	interface Results {
+		/*
+		* Number of times the data was clustered with different initial centroids.
+		*/
+		replicates?: number;
+
+		/*
+		* Index of the initial centroids which produced the best result.
+		*/
+		replicate?: number;
+
+		/*
+		* Clustering algorithm name.
+		*/
+		metric?: Metric;
+
+		/*
+		* Number of iterations for best results.
+		*/
+		iterations?: number;
+
+		/*
+		* Clustering algorithm.
+		*/
+		algorithm?: Algorithm;
+
+		/*
+		* Sum of squared distances to the closest centroid for all samples.
+		*/
+		inertia?: number;
+
+		/*
+		* Number of clusters.
+		*/
+		k?: number;
+
+		/*
+		* Number of samples.
+		*/
+		samples?: number;
+
+		/*
+		* Number of features.
+		*/
+		features?: number;
+
+		/*
+		* Centroids.
+		*/
+		centroids: ndarray;
+
+		/*
+		* Statistics
+		*/
+		statistics: ndarray;
+	}
+   ```
+
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/ctor</code> <b>[ Difficulty : 3/5 ]</b> (3-5 days)
+</summary>
+<br>
+
+   ```javascript
+	// ml/kmeans/ctor/lib/main.js
+	function kmeans( k, options ) {
+		// Validate inputs
+		// ...
+		// options should contain
+		// - options.init {string}
+		// - options.centroids {ndarray} // only use it if options.init is not set
+		// - 
+		
+		// Initialize new model constructor
+		model = new Model( k, opts );
+		
+		// Initialize kmeans model object
+		obj = {};
+		
+		// Attach methods to the kmeans model object:
+		// Inspired by how ztest handles an out object with a print function attached to it.
+		// https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/stats/ztest/lib/main.js
+		setReadOnly( accumulator, 'fit', fit );
+		setReadOnly( accumulator, 'predict', predict );
+		
+		return obj;
+		
+		function fit( X, y ) {
+			// Validate inputs
+			// ...
+
+			// Use model object
+			model.fit( X, y );
+			return model.results;
+		}
+		
+		function predict( x ) {
+			// Validate inputs
+			// ...
+
+			// Use model object
+			return model.predict( x );
+		}
+	}
+   ```
+
+   ```javascript
+	// ml/kmeans/ctor/lib/model.js
+	function Model( k, opts ) {
+		// Set internal properties and initialize arrays
+		this._k = k;
+		this._opts = opts;
+	
+		// ....
+		
+		return this;
+		
+	}
+	
+	setReadOnly( Model.prototype, 'fit', function fit( X, y ) {
+		var r;
+		
+		// results object is passed into dkmeansld as an argument
+		for ( r = 0; r < this._reps; r++ ) {
+			dkmeansld( N, M, k, X, ..., y, ..., this.out );
+		}
+		// if the above iteration over replicates should live inside the `dkmeansld` function or here is still TBD
+		return out;
+	});
+	
+	setReadOnly( Model.prototype, 'predict', function predict( X, y ) {
+		...
+	});
+   ```
+
+   ```C
+	// ml/kmeans/ctor/src/main.c
+	struct kmeans * stdlib_kmeans_allocate( int64_t N, struct kmeans_options *opts ) {
+		
+		struct stdlib_kmeans_model *model = stdlib_kmeans_model_allocate( N, opts );
+		struct kmeans *obj = malloc( sizeof( struct kmeans ) );
+		
+		// set object properties here, for example
+		obj->N = N;
+		obj->model = model;
+	
+		return obj;
+	}
+	
+	struct stdlib_kmeans_results * stdlib_kmeans_fit( const struct kmeans *obj, const struct ndarray *X, const struct ndarray *Y ) {
+	
+		stdlib_kmeans_model_fit( obj->model, X, Y );
+		return stdlib_kmeans_model_get_results( obj->model );
+	}
+	
+	struct ndarray * stdlib_kmeans_predict( const struct kmeans *obj, const struct ndarray *X ) {
+		return stdlib_kmeans_model_predict( obj->model, X );
+	}
+	
+	void stdlib_kmeans_free(struct kmeans *obj) {
+		if (!obj) return;
+	
+		stdlib_kmeans_model_free(obj->model);
+		free(obj);
+	}
+   ```
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-plus-plus</code> <b>[ Difficulty : 3/5 ]</b> (2-3 days)
+</summary>
+<br>
+
+References: 
+- [Wikipedia](https://en.wikipedia.org/wiki/K-means%2B%2B#Improved_initialization_algorithm)
+- [sklearn](https://github.com/scikit-learn/scikit-learn/blob/fe2edb3cdbd75ae4e662fda67dcb19277258792b/sklearn/cluster/_kmeans.py#L74)
+- [dlib](https://github.com/davisking/dlib/blob/0828f313d4221f1f24d8d14dfbaa98f3c04f7e9f/dlib/svm/kkmeans.h#L302)
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_kmeansplusplus.js)
+
+
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-forgy</code> <b>[ Difficulty : 2/5 ]</b> (1-2 days)
+</summary>
+<br>
+
+References:
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_forgy.js)
+
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-sample</code> <b>[ Difficulty : 2/5 ]</b> (1-2 days)
+</summary>
+<br>
+
+References:
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_sample.js)
+   
