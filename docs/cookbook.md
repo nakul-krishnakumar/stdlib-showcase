@@ -1,12 +1,7 @@
-
 ## Distance Metrics
 
 - `stats/strided/dpcorr`
 - `stats/strided/distances/dcorrelation`
-- `stats/strided/distances/dsquared-cosine`
-- `stats/strided/distances/dsquared-correlation`
-
-dependency graph here
 
 ---
 
@@ -60,14 +55,14 @@ dependency graph here
 	}
 	```
 
-- `ml/loss/log`
-- `ml/loss/modified-huber`
-- `ml/loss/squared-hinge` 
-- `ml/loss/perceptron`
-- `ml/loss/squared-error`
-- `ml/loss/huber`
-- `ml/loss/epsilon-insensitive`
-- `ml/loss/squared-epsilon-insensitive`
+- `ml/loss/dlog`
+- `ml/loss/dmodified-huber`
+- `ml/loss/dsquared-hinge` 
+- `ml/loss/dperceptron`
+- `ml/loss/dsquared-error`
+- `ml/loss/dhuber`
+- `ml/loss/depsilon-insensitive`
+- `ml/loss/dsquared-epsilon-insensitive`
 
 ---
 
@@ -101,8 +96,6 @@ References:
 
 </details>
 
-
-<br>
 <br>
 
 <details>
@@ -238,7 +231,6 @@ References:
    ```javascript
 	// ml/kmeans/ctor/lib/main.js
 	function kmeans( k, options ) {
----
 
 		// Validate inputs
 		// ...
@@ -308,12 +300,25 @@ References:
 		...
 	});
    ```
+To handle the case where use passes predefined centroids, I have two C APIs for kmeans, `stdlib_kmeans_allocate` and `stdlib_kmeans_allocate_with_centroids`.
 
    ```C
 	// ml/kmeans/ctor/src/main.c
-	struct kmeans * stdlib_kmeans_allocate( int64_t N, struct kmeans_options *opts ) {
+	struct kmeans * stdlib_kmeans_allocate( int64_t N, char* init, ... ) {
 		
-		struct stdlib_kmeans_model *model = stdlib_kmeans_model_allocate( N, opts );
+		struct stdlib_kmeans_model *model = stdlib_kmeans_model_allocate( N, init, ... );
+		struct kmeans *obj = malloc( sizeof( struct kmeans ) );
+		
+		// set object properties here, for example
+		obj->N = N;
+		obj->model = model;
+	
+		return obj;
+	}
+
+	struct kmeans * stdlib_kmeans_allocate_with_centroids( int64_t N, const struct ndarray *init, ... ) {
+		
+		struct stdlib_kmeans_model *model = stdlib_kmeans_model_allocate_with_centroids( N, init, ... );
 		struct kmeans *obj = malloc( sizeof( struct kmeans ) );
 		
 		// set object properties here, for example
@@ -351,9 +356,9 @@ References:
 ## SGD Classification
 
 - `ml/sgd-classification/ctor`
-- `ml/strided/sgd-trainer`
-- `ml/strided/sgd-classification-binary`
-- `ml/strided/sgd-classification-multiclass`
+- `ml/strided/dsgd-trainer`
+- `ml/strided/dsgd-classification-binary`
+- `ml/strided/dsgd-classification-multiclass`
 - `ml/base/sgd-classification/results`
 	```typescript
 	interface Results {
