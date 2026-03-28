@@ -6,6 +6,8 @@
 - `stats/strided/distances/dsquared-cosine`
 - `stats/strided/distances/dsquared-correlation`
 
+dependency graph here
+
 ---
 
 ## Loss Functions
@@ -70,6 +72,51 @@
 ---
 
 ## KMeans Clustering
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-plus-plus</code> <b>[ Difficulty : 3/5 ]</b> (2-3 days)
+</summary>
+<br>
+
+References: 
+- [Wikipedia](https://en.wikipedia.org/wiki/K-means%2B%2B#Improved_initialization_algorithm)
+- [sklearn](https://github.com/scikit-learn/scikit-learn/blob/fe2edb3cdbd75ae4e662fda67dcb19277258792b/sklearn/cluster/_kmeans.py#L74)
+- [dlib](https://github.com/davisking/dlib/blob/0828f313d4221f1f24d8d14dfbaa98f3c04f7e9f/dlib/svm/kkmeans.h#L302)
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_kmeansplusplus.js)
+
+
+</details>
+
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-forgy</code> <b>[ Difficulty : 2/5 ]</b> (2-3 days)
+</summary>
+<br>
+
+References:
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_forgy.js)
+
+</details>
+
+
+<br>
+<br>
+
+<details>
+<summary>
+  <code>ml/kmeans/strided/dkmeans-init-sample</code> <b>[ Difficulty : 2/5 ]</b> (2-3 days)
+</summary>
+<br>
+
+References:
+- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_sample.js)
+
+</details>
+
+<br>
 
 <details>
 <summary>
@@ -191,6 +238,8 @@
    ```javascript
 	// ml/kmeans/ctor/lib/main.js
 	function kmeans( k, options ) {
+---
+
 		// Validate inputs
 		// ...
 		// options should contain
@@ -295,42 +344,71 @@
 
 <br>
 
-<details>
-<summary>
-  <code>ml/kmeans/strided/dkmeans-init-plus-plus</code> <b>[ Difficulty : 3/5 ]</b> (2-3 days)
-</summary>
-<br>
+![kmeans-dependency-graph](kmeans_dep_graph.png)
+ 
+---
 
-References: 
-- [Wikipedia](https://en.wikipedia.org/wiki/K-means%2B%2B#Improved_initialization_algorithm)
-- [sklearn](https://github.com/scikit-learn/scikit-learn/blob/fe2edb3cdbd75ae4e662fda67dcb19277258792b/sklearn/cluster/_kmeans.py#L74)
-- [dlib](https://github.com/davisking/dlib/blob/0828f313d4221f1f24d8d14dfbaa98f3c04f7e9f/dlib/svm/kkmeans.h#L302)
-- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_kmeansplusplus.js)
+## SGD Classifier
 
+- `ml/sgd-classifier/ctor`
+- `ml/strided/sgd-trainer`
+- `ml/strided/sgd-classification-binary`
+- `ml/strided/sgd-classification-multiclass`
+- `ml/base/sgd-classifier/results`
+	```typescript
+	interface Results {
+		/*
+		* Weights assigned to features.
+		*
+		* Note: It is of shape (1, N) if n_classes == 2 else (n_classes, N) as it does OvR
+		* 
+		*/
+		coefficients?: ndarray;
 
-</details>
+		/*
+		* Constants in decision function
+		* Note: It is of shape (1,) if n_classes == 2 else (n_classes,)
+		*/
+		intercept?: Float64Array | Float32Array;
+		
+		/*
+		* Number of iterations for best results.
+		*/
+		iterations?: number;
 
-<br>
+		/*
+		* Number of classes.
+		*/
+		k?: number;
 
-<details>
-<summary>
-  <code>ml/kmeans/strided/dkmeans-init-forgy</code> <b>[ Difficulty : 2/5 ]</b> (1-2 days)
-</summary>
-<br>
+		/*
+		* Number of samples.
+		*/
+		samples?: number;
 
-References:
-- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_forgy.js)
+		/*
+		* Number of features.
+		*/
+		features?: number;
 
-</details>
+		/*
+		* Loss function.
+		*/
+		loss?: Loss;
 
-<br>
+		/*
+		* Learning rate schedule.
+		*/
+		lr?: LearningRate;
 
-<details>
-<summary>
-  <code>ml/kmeans/strided/dkmeans-init-sample</code> <b>[ Difficulty : 2/5 ]</b> (1-2 days)
-</summary>
-<br>
+		/*
+		* Statistics
+		*/
+		statistics?: ndarray;
+	}
+   ```
 
-References:
-- [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_sample.js)
-   
+- `ml/base/sgd-classifier/losses`
+- `ml/base/sgd-classifier/learningRates`
+
+![sgd-classification-dependency-graph](sgd_clf_dep_graph.png)
