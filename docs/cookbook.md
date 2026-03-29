@@ -80,6 +80,10 @@ References:
 - [dlib](https://github.com/davisking/dlib/blob/0828f313d4221f1f24d8d14dfbaa98f3c04f7e9f/dlib/svm/kkmeans.h#L302)
 - [`@stdlib/ml/incr/kmeans`](https://github.com/stdlib-js/stdlib/blob/develop/lib/node_modules/%40stdlib/ml/incr/kmeans/lib/init_kmeansplusplus.js)
 
+```javascript
+function dkmeansplusplus() {}
+function ndarray() {}
+```
 
 </details>
 
@@ -462,3 +466,50 @@ function perceptron( N, options ) {
 - `ml/base/sgd-classification/learningRates`
 
 ![sgd-regression-dependency-graph](sgd_reg_dep_graph.png)
+
+```
+ml/kmeans/ctor
+├── benchmarks/
+├── docs/
+├── examples/
+├── include/
+├── lib/
+│   ├── main.js
+│   ├── index.js
+│   ├── model.js
+│   ├── fit.js
+│   ├── predict.js
+│   └── validate.js
+├── src/
+│   ├── main.c
+│   ├── model.c
+│   ├── fit.c
+│   └── predict.c
+├── test/
+├── README.md
+├── manifest.json
+└── package.json
+```
+```
+ml/strided/dkmeansld
+├── benchmarks/
+├── docs/
+├── examples/
+├── include/
+├── lib/
+│   ├── dkmeansld.js
+│   ├── dkmeansld.native.js
+│   ├── index.js
+│   ├── main.js
+│   ├── native.js
+│   ├── ndarray.js
+│   └── ndarray.native.js
+├── src/
+│   ├── Makefile
+│   ├── main.c
+│   └── addon.c
+├── test/
+├── README.md
+├── manifest.json
+└── package.json
+```
